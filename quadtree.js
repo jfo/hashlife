@@ -30,6 +30,23 @@ class Quadtree {
     return this.from2dArray(arr);
   }
 
+  to2dArray() {
+    if (typeof this.nw === 'boolean') {
+      return [
+        [this.nw, this.ne],
+        [this.sw, this.se]
+      ]
+    }
+
+    if (this.nw.constructor.name === 'Quadtree') {
+      var nw = this.nw.to2dArray()
+      var ne = this.ne.to2dArray()
+      var sw = this.sw.to2dArray()
+      var se = this.se.to2dArray()
+    }
+
+  }
+
   static from2dArray(arr) {
     assert(
       arr.map(subarr => subarr.length).every(e => e === arr.length),

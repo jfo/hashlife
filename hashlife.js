@@ -1,10 +1,10 @@
 const Quadtree = require("./quadtree")
 
 let test = `
-* . . . . . . . . . . . . . . *
+* . . * . . . . . . . . . . . *
 . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . .
-. . . . . . . . . . . . . . . .
+* . . * . . . . . . . . . . . .
 . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . .
@@ -23,5 +23,5 @@ let test = `
 const x = Quadtree.fromString(test);
 
 console.log(
-  x
-);
+  x.nw.nw.to2dArray()
+)
