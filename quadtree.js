@@ -22,6 +22,14 @@ class Quadtree {
     return ['nw', 'ne', 'se', 'sw'].map(check).every(x => x === true);
   }
 
+  static fromString(str) {
+    const arr = str
+      .trim()
+      .split('\n')
+      .map(line => line.trim().split(' ').map(el => (el === '.' ? false : true)));
+    return this.from2dArray(arr);
+  }
+
   static from2dArray(arr) {
     assert(
       arr.map(subarr => subarr.length).every(e => e === arr.length),

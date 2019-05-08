@@ -19,12 +19,8 @@ let test = `
 * . . . . . . . . . . . . . . *
 `;
 
-test = test
-  .split('\n')
-  .slice(1, 17)
-  .map(line => line.split(' ').map(el => (el === '.' ? false : true)));
 
-const x = Quadtree.from2dArray(test);
+const x = Quadtree.fromString(test);
 
 console.log(
   x
