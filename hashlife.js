@@ -21,6 +21,35 @@ class Quadtree {
 
     return ['nw', 'ne', 'se', 'sw'].map(check).every(x => x === true);
   }
+
+  static from2dArray(arr) {
+    if (arr.length === 1) {
+      return arr[0][0];
+    }
+
+    const nw = arr
+      .slice(0, arr.length / 2)
+      .map(subarr => subarr.slice(0, subarr.length / 2));
+
+    const ne = arr
+      .slice(0, arr.length / 2)
+      .map(subarr => subarr.slice(subarr.length / 2, subarr.length));
+
+    const se = arr
+      .slice(arr.length / 2, arr.length)
+      .map(subarr => subarr.slice(subarr.length / 2, subarr.length));
+
+    const sw = arr
+      .slice(arr.length / 2, arr.length)
+      .map(subarr => subarr.slice(0, subarr.length / 2));
+
+    return new Quadtree({
+      nw: this.from2dArray(nw),
+      ne: this.from2dArray(ne),
+      se: this.from2dArray(se),
+      sw: this.from2dArray(sw),
+    });
+  }
 }
 
 let test = `
@@ -42,40 +71,13 @@ let test = `
 * . . . . . . . . . . . . . . *
 `;
 
-const array2Quadtree = function(arr) {
-  if (arr.length === 1) {
-    return arr[0][0];
-  }
-
-  const nw = arr
-    .slice(0, arr.length / 2)
-    .map(subarr => subarr.slice(0, subarr.length / 2));
-
-  const ne = arr
-    .slice(0, arr.length / 2)
-    .map(subarr => subarr.slice(subarr.length / 2, subarr.length));
-
-  const se = arr
-    .slice(arr.length / 2, arr.length)
-    .map(subarr => subarr.slice(subarr.length / 2, subarr.length));
-
-  const sw = arr
-    .slice(arr.length / 2, arr.length)
-    .map(subarr => subarr.slice(0, subarr.length / 2));
-
-  return new Quadtree({
-    nw: array2Quadtree(nw),
-    ne: array2Quadtree(ne),
-    se: array2Quadtree(se),
-    sw: array2Quadtree(sw),
-  });
-};
-
 test = test
   .split('\n')
   .slice(1, 17)
   .map(line => line.split(' ').map(el => (el === '.' ? false : true)));
 
-const x = array2Quadtree(test);
-const y = array2Quadtree(test);
-console.log(x.equals(y));
+const x = Quadtree.from2dArray(test);
+
+console.log(
+  x
+);
