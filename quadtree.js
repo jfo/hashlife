@@ -1,4 +1,4 @@
-const assert = require("assert")
+const assert = require('assert');
 
 class Quadtree {
   constructor({nw, ne, se, sw} = {}) {
@@ -23,6 +23,11 @@ class Quadtree {
   }
 
   static from2dArray(arr) {
+    assert(
+      arr.map(subarr => subarr.length).every(e => e === arr.length),
+      `2d array is not square`,
+    );
+
     if (arr.length === 1) {
       return arr[0][0];
     }
