@@ -1,5 +1,12 @@
+const assert = require("assert")
+
 class Quadtree {
   constructor({nw, ne, se, sw} = {}) {
+    assert(nw.constructor.name === 'Quadtree' || typeof nw === 'boolean');
+    assert(ne.constructor.name === 'Quadtree' || typeof ne === 'boolean');
+    assert(se.constructor.name === 'Quadtree' || typeof se === 'boolean');
+    assert(sw.constructor.name === 'Quadtree' || typeof sw === 'boolean');
+
     this.nw = nw;
     this.ne = ne;
     this.se = se;
@@ -12,7 +19,7 @@ class Quadtree {
         ? this[direction].equals(quadtree[direction])
         : this[direction] === quadtree[direction];
 
-    ['nw', 'ne', 'se', 'sw'].map(check).every(x => x === true);
+    return ['nw', 'ne', 'se', 'sw'].map(check).every(x => x === true);
   }
 }
 
