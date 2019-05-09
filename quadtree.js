@@ -38,13 +38,22 @@ class Quadtree {
       ]
     }
 
-    if (this.nw.constructor.name === 'Quadtree') {
-      var nw = this.nw.to2dArray()
-      var ne = this.ne.to2dArray()
-      var sw = this.sw.to2dArray()
-      var se = this.se.to2dArray()
+    const nw = this.nw.to2dArray();
+    const ne = this.ne.to2dArray();
+    const sw = this.sw.to2dArray();
+    const se = this.se.to2dArray();
+
+    let out = [];
+
+    for (let i = 0; i < nw.length; i++) {
+      out.push( [...nw[i], ...ne[i]] );
     }
 
+    for (let i = 0; i < sw.length; i++) {
+      out.push( [...sw[i], ...se[i]] );
+    }
+
+    return out;
   }
 
   static from2dArray(arr) {

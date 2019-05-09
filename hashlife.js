@@ -23,5 +23,5 @@ let test = `
 const x = Quadtree.fromString(test);
 
 console.log(
-  x.nw.nw.to2dArray()
+  x.to2dArray()
 )
