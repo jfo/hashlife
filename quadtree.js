@@ -22,6 +22,14 @@ class Quadtree {
     return ['nw', 'ne', 'se', 'sw'].map(check).every(x => x === true);
   }
 
+  toString(str) {
+    return this.to2dArray().map(
+      subarr => subarr.map(
+        el => el ? '* ' : '. '
+      ).join('')
+    ).join('\n')
+  }
+
   static fromString(str) {
     const arr = str
       .trim()
