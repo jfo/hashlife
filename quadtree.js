@@ -13,6 +13,72 @@ class Quadtree {
     this.sw = sw;
   }
 
+  centeredSubnode() {
+    return new Quadtree({
+      nw: this.nw.se,
+      ne: this.ne.sw,
+      sw: this.sw.ne,
+      se: this.se.nw
+    })
+  }
+
+  centeredHorizontal(w, e) {
+    return new Quadtree({
+      nw: w.ne.se,
+      ne: e.nw.sw,
+      sw: w.se.ne,
+      se: e.sw.nw
+    })
+  }
+
+  centeredVertical(n, s) {
+    return new Quadtree({
+      nw: n.sw.se,
+      ne: n.se.sw,
+      sw: s.nw.ne,
+      se: s.ne.nw
+    })
+  }
+
+  centeredSubSubnode() {
+    return new Quadtree({
+      nw: this.nw.se.se,
+      ne: this.ne.sw.sw,
+      sw: this.sw.ne.ne,
+      se: this.se.nw.nw
+    })
+  }
+
+  level() {
+    if (typeof this.nw === 'boolean') {
+      return 0;
+    } else {
+      return this.nw.level() + 1;
+    }
+  }
+
+  nextGeneration() {
+    if (this.level() === 2) {
+      return this;
+    } else {
+      const n00 = this.nw.centeredSubnode(),
+        n01 = this.centeredHorizontal(this.nw, this.ne),
+        n02 = this.ne.centeredSubnode(),
+        n10 = this.centeredVertical(this.nw, this.sw),
+        n11 = this.centeredSubSubnode(),
+        n12 = this.centeredVertical(this.ne, this.se),
+        n20 = this.sw.centeredSubnode(),
+        n21 = this.centeredHorizontal(this.sw, this.se),
+        n22 = this.se.centeredSubnode() ;
+      return new Quadtree({
+        nw: new Quadtree({nw: n00, ne: n01, sw: n10, se: n11}).nextGeneration(),
+        ne: new Quadtree({nw: n01, ne: n02, sw: n11, se: n12}).nextGeneration(),
+        sw: new Quadtree({nw: n10, ne: n11, sw: n20, se: n21}).nextGeneration(),
+        se: new Quadtree({nw: n11, ne: n12, sw: n21, se: n22}).nextGeneration()
+      });
+    }
+  }
+
   equals(quadtree) {
     const check = direction =>
       this[direction].constructor.name === 'Quadtree'
@@ -27,7 +93,7 @@ class Quadtree {
       subarr => subarr.map(
         el => el ? '* ' : '. '
       ).join('')
-    ).join('\n')
+    ).join('\n') + '\n'
   }
 
   static fromString(str) {
