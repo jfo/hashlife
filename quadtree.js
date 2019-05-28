@@ -1,5 +1,10 @@
 const assert = require('assert');
 
+const computeAliveOrDead = (currentCell, neighbors = []) => {
+  const count = neighbors.filter(el => el).length
+  return currentCell ? count == 2 || count == 3 : count == 3;
+}
+
 class Quadtree {
   constructor({nw, ne, se, sw} = {}) {
     assert(nw.constructor.name === 'Quadtree' || typeof nw === 'boolean');
@@ -59,7 +64,54 @@ class Quadtree {
 
   nextGeneration() {
     if (this.level() === 2) {
-      return this;
+      console.log(this.toString())
+      const nw = new Quadtree({
+        nw: computeAliveOrDead(this.nw.se.nw, [
+          this.nw.se.se,
+          this.nw.se.ne,
+          this.nw.se.sw,
+          this.nw.sw.se,
+          this.nw.sw.ne,
+          this.nw.nw.se,
+          this.nw.ne.sw,
+          this.nw.ne.se
+        ]),
+        ne: computeAliveOrDead(this.nw.se.ne, [
+          this.nw.ne.se,
+          this.nw.ne.sw,
+          this.nw.se.sw,
+          this.nw.se.se,
+          this.nw.se.nw,
+          this.ne.sw.nw,
+          this.ne.sw.sw,
+          this.ne.nw.sw,
+        ]),
+        sw: computeAliveOrDead(this.nw.se.sw),
+        se: computeAliveOrDead(this.nw.se.se),
+      })
+
+      const ne = new Quadtree({
+        nw: computeAliveOrDead(this.ne.sw.nw),
+        ne: computeAliveOrDead(this.ne.sw.ne),
+        sw: computeAliveOrDead(this.ne.sw.sw),
+        se: computeAliveOrDead(this.ne.sw.se),
+      })
+
+      const sw = new Quadtree({
+        nw: computeAliveOrDead(this.sw.ne.nw),
+        ne: computeAliveOrDead(this.sw.ne.ne),
+        sw: computeAliveOrDead(this.sw.ne.sw),
+        se: computeAliveOrDead(this.sw.ne.se),
+      })
+
+      const se = new Quadtree({
+        nw: computeAliveOrDead(this.se.nw.nw),
+        ne: computeAliveOrDead(this.se.nw.ne),
+        sw: computeAliveOrDead(this.se.nw.sw),
+        se: computeAliveOrDead(this.se.nw.se),
+      })
+
+      return new Quadtree({ nw, ne, sw, se });
     } else {
       const n00 = this.nw.centeredSubnode(),
         n01 = this.centeredHorizontal(this.nw, this.ne),
@@ -69,7 +121,8 @@ class Quadtree {
         n12 = this.centeredVertical(this.ne, this.se),
         n20 = this.sw.centeredSubnode(),
         n21 = this.centeredHorizontal(this.sw, this.se),
-        n22 = this.se.centeredSubnode() ;
+        n22 = this.se.centeredSubnode();
+
       return new Quadtree({
         nw: new Quadtree({nw: n00, ne: n01, sw: n10, se: n11}).nextGeneration(),
         ne: new Quadtree({nw: n01, ne: n02, sw: n11, se: n12}).nextGeneration(),
